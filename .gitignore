@@ -1,0 +1,7 @@
+__pycache__/
+.notescraper
+.vscode
+elasticsearch-*/
+kibana-*/
+venv/
+.DS_Store
