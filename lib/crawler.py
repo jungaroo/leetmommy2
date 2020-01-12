@@ -1,10 +1,11 @@
 import scrapy
 from scrapy.crawler import CrawlerRunner
-from twisted.internet import reactor
 import bs4
 import re
 import json
 import os
+import crochet
+crochet.setup()
 
 
 class RithmLectureSpider(scrapy.Spider):
@@ -89,28 +90,42 @@ def scrape_cohort_lectures(cohort):
     :param cohort: Cohort 'r11', 'r12', 'r13'
     """
 
-    # TODO: Add download delays in case of overload
     temp_file = 'temp.json'
-
-    process = CrawlerRunner(
-        settings={
-            'FEED_FORMAT': 'json',
-            'FEED_URI': temp_file,
-        }
-    )
-
-    runner = process.crawl(RithmLectureSpider, cohort=cohort)
-
-    # Manual stop callback
-    runner.addBoth(lambda _: reactor.stop())
-    reactor.run()  # This will block the script until it completes
-
+    _scrape_to_temp(cohort, temp_file)
     with open(temp_file) as f:
         data = json.load(f)
 
     os.remove(temp_file)
 
     return data
+
+
+@crochet.wait_for(timeout=40)
+def _scrape_to_temp(cohort, temp_file: str):
+    """Crawls with scrapy asynchronously'
+    Blocks until timeout or result is returned from the `Twisted` thread.
+    :param cohort: Cohort to scrape
+    :param temp_file: Name of a tempory file to store
+    :return: A `Deferred` with extracted results.
+    """
+
+    # Manual removal b/c Scrapy does not overwrite
+    try:
+        os.remove(temp_file)
+    except FileNotFoundError:
+        pass
+
+    runner = CrawlerRunner(
+        settings={
+            'FEED_FORMAT': 'json',
+            'FEED_URI': temp_file,
+        }
+    )
+
+    thread = runner.crawl(RithmLectureSpider, cohort=cohort)
+    # TODO: Replace this callback with a logger to update with date
+    thread.addCallback(lambda _: print('Done'))
+    return thread
 
 
 if __name__ == "__main__":
