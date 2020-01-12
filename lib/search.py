@@ -1,6 +1,6 @@
 from elasticsearch import Elasticsearch, client
 from elasticsearch.helpers import bulk
-from config import CONFIG
+from .config import CONFIG
 
 DEFAULT_BODY = {
     "settings": {

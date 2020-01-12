@@ -1,4 +1,4 @@
-from lib.config import Config
+from .config import CONFIG
 from schematics.models import Model
 from schematics.types import StringType
 from schematics.exceptions import DataError
@@ -11,7 +11,7 @@ import json
 
 class LeetMommyValidator(Model):
     """Validator to be used for most LeetMommy routes requiring a cohort"""
-    cohort = StringType(required=True, choices=Config.COHORTS)
+    cohort = StringType(required=True, choices=CONFIG.COHORTS)
 
 
 class QueryValidator(LeetMommyValidator):
