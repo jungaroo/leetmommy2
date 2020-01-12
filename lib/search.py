@@ -1,6 +1,6 @@
 from elasticsearch import Elasticsearch, client
 from elasticsearch.helpers import bulk
-from lib.config import CONFIG
+from config import CONFIG
 
 DEFAULT_BODY = {
     "settings": {
@@ -179,12 +179,12 @@ if __name__ == "__main__":
 
     cli = IndexController.get_instance()
     cli.delete_index('demo11')
-    cli.create_index('demo11')
-    import crawler
+    # cli.create_index('demo11')
+    # import crawler
 
-    data = crawler.scrape_cohort_lectures('r11')
-    cli.bulk_insert(json_data=data, index_name='rithm11')
+    # data = crawler.scrape_cohort_lectures('r11')
+    # cli.bulk_insert(json_data=data, index_name='rithm11')
 
-    res = cli.search(search_query='mongodb', index_name='rithm11')
-    print("Results:", len(res), res)
+    # res = cli.search(search_query='mongodb', index_name='rithm11')
+    # print("Results:", len(res), res)
     # res = cli.autocomplete('rithm11', 'rea')
