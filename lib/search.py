@@ -97,7 +97,6 @@ class IndexController:
         :param index_name: name of the index
         :param _id: identifier for the document
         """
-        
         return self.es.exists(index_name, id=_id)
 
     def refresh(self, index_name: str):
