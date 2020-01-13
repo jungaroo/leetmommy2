@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch, client
 from elasticsearch.helpers import bulk
-from .config import CONFIG
+# from .config import CONFIG
+from config import CONFIG
 
 DEFAULT_BODY = {
     "settings": {
@@ -135,11 +136,12 @@ class IndexController:
             "query": {
                 "multi_match": {
                     "query": search_query,
+                    "type": "bool_prefix",
                     # Titles should have highest boost
                     "fields": [
                         "headers^1.1",
                         "bullets",
-                        "text",
+                        "text^0.8",
                         "title^1.25",
                         "code^0.8"
                     ],
@@ -178,13 +180,13 @@ class IndexController:
 if __name__ == "__main__":
 
     cli = IndexController.get_instance()
-    cli.delete_index('demo11')
-    # cli.create_index('demo11')
+    # cli.delete_index('demo11')
+    # cli.create_index('r11')
     # import crawler
 
     # data = crawler.scrape_cohort_lectures('r11')
-    # cli.bulk_insert(json_data=data, index_name='rithm11')
-
-    # res = cli.search(search_query='mongodb', index_name='rithm11')
-    # print("Results:", len(res), res)
+    # cli.bulk_insert(json_data=data, index_name='r11')
+    
+    res = cli.search(search_query='oop', index_name='r11')
+    print("Results:", len(res), [r['title'] for r in res])
     # res = cli.autocomplete('rithm11', 'rea')
