@@ -123,7 +123,7 @@ class IndexController:
             }
         }
         results = self.es.search(index_name, body=body)
-        return [r for r in results['hits']['hits']]
+        return [r['_source']['title'] for r in results['hits']['hits']]
 
     def search(self, index_name: str, search_query: str):
         """Searches index for documents using query
