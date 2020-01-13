@@ -4,9 +4,9 @@ from lib.crawler import scrape_cohort_lectures
 from lib.search import IndexController
 from lib.schema import validator, LeetMommyValidator, QueryValidator
 from lib.config import CONFIG
-
+from flask_cors import CORS
 app = FlaskAPI(__name__)
-
+cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 @app.route('/ping', methods=['GET'])
 def ping():
