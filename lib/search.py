@@ -147,12 +147,33 @@ class IndexController:
                     "operator": "and",
                     "fuzziness": "2",  # Levenshtein edit distance
                 }
+            },
+            "highlight": {
+                "pre_tags": ["<b>"],
+                "post_tags": ["</b>"],
+                "number_of_fragments": 2,
+                "fragment_size": 50,
+                "fields":
+                [
+                    {"title": {}},
+                    {"headers": {}},
+                    {"text": {"fragment_size": 150, "number_of_fragments": 3}},
+                    {"code": {}},
+                    {"bullets": {}}
+                ]
             }
         }
 
         results = self.es.search(index_name, body=body)
 
-        return [r['_source'] for r in results['hits']['hits']]
+        return [
+            {
+                "title": r['_source']['title'],
+                "url": r['_source']['url'],
+                "highlight": r['highlight']
+            }
+            for r in results['hits']['hits']
+        ]
 
     @staticmethod
     def parse_pages(json_data, index_name: str):
@@ -185,7 +206,7 @@ if __name__ == "__main__":
 
     # data = crawler.scrape_cohort_lectures('r11')
     # cli.bulk_insert(json_data=data, index_name='r11')
-    
+
     res = cli.search(search_query='oop', index_name='r11')
     print("Results:", len(res), [r['title'] for r in res])
     # res = cli.autocomplete('rithm11', 'rea')
