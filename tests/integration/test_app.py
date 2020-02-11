@@ -1,3 +1,4 @@
+# TODO - mock the Elastic search, check that routes return 200 codes etc.
 from app import app
 import unittest
 
