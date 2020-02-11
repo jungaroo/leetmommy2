@@ -3,11 +3,132 @@
 Leetmommy is an open source search engine JSON API backed by ElasticSearch (7.5.1) and scrapy for Rithm school lectures.
 
 Here's a demo frontend app using the Leetmommy 2.0 API
-[leetmommy.surge.sh](leetmommy.surge.sh)
+[leetmommy.surge.sh](http://leetmommy.surge.sh)
 
 # API Documentation
 
-  todo
+See `app.py` for the actual route source code.
+## Resource URL (base URL)
+```
+http://leetmommy2.herokuapp.com/
+```
+
+| HTTP VERB | URL | Description |
+| --- | ---| --- |
+| GET | /ping | Just a dummy HTTP request to wake up the heroku servers. 
+| GET | /search | Main searching to get list of documents 
+| GET | /autocomplete | returns a list of documents that match the current word. 
+---
+
+## GET /ping
+This route takes no parameters, it just wakes up the heroku server from sleeping.
+Once finished, it will return a JSON object :
+```
+{ ping: true }
+```
+
+Sample usage 
+```js
+import axios from 'axios';
+const BASE_URL = 'leetmommy2.herokuapp.com';
+
+const wakeUpHeroku = async () => {
+  const response = await axios.get(`${BASE_URL}/ping`);
+}
+
+wakeUpHeroku();
+```
+
+## GET /search?search={search}&cohort={cohort}
+#### URI Parameters
+| Name | Input | Required | Type | Description |
+| --- | --- | --- | --- | --- |
+| search | query | True | string | Space seperated string of search
+| cohort | query | True | string | A cohort string. Either 'r11', 'r12', 'r13' or 'r14' etc. 
+
+### Response
+If successful parameters are passed: 
+
+Returns a JSON, with property `data`:
+Which is an array of rithm school lecture document objects.
+Each document has these keys:
+
+```json
+{
+  "title": "Python Tools & Techniques",
+  "url": "http://curric.rithmschool.com/r13/lectures/python-tools/",
+  "highlight": {
+    "headers": [
+      "<b>Python</b> Tools & Techniques"
+    ],
+    "code": [
+        "$ <b>python3</b> -m doctest -v your-file.py",
+        "$ cd my-project-directory $ <b>python3</b> -m venv venv"
+    ],
+    "text": [
+        "In general, in <b>Python</b>: explicit is better than implicit",
+        "<b>Python</b> includes dozens of useful libraries",
+        "When using a new <b>Python</b> project:"
+    ],
+    "title": [
+        "<b>Python</b> Tools & Techniques"
+    ],
+    "bullets": [
+        "It makes certain <b>python</b> is the version of <b>Python</b> used",
+        "You have access to the standard library of <b>Python</b>"
+    ]
+  }
+}
+```
+Highlight keys are surrounded by <b>, and highlight where the match is found.
+Headers, code, text, title, bullets are keys that tell where the text match was found.
+
+Sample usage 
+```js
+import axios from 'axios';
+const BASE_URL = 'leetmommy2.herokuapp.com';
+
+const getLinks = async (words='Python', cohort='r13') => {
+  const response = await axios.get(`${BASE_URL}/search?search=${words}&cohort=${cohort}`);
+  const { data } = response.data; // Sorry for the double data key, maybe we should fix this
+  const links = data.map((d) => d.url);
+  return links;
+}
+```
+
+## GET /search?search={search}&cohort={cohort}
+#### URI Parameters
+| Name | Input | Required | Type | Description |
+| --- | --- | --- | --- | --- |
+| search | query | True | string | Space seperated string of search
+| cohort | query | True | string | A cohort string. Either 'r11', 'r12', 'r13' or 'r14' etc. 
+
+### Response
+If successful parameters are passed: 
+
+Returns a JSON, with property `data`, a list of Lecture Note title suggestions.
+```json
+{
+  "data": [
+    "Python Wrap-Up",
+    "Python Tools & Techniques",
+    "Python Object Orientation",
+    "Introduction to Python",
+    "Python Data Structures"
+  ]
+}
+```
+
+```js
+import axios from 'axios';
+const BASE_URL = 'leetmommy2.herokuapp.com';
+
+const getLinks = async (words='Python', cohort='r13') => {
+  const response = await axios.get(`${BASE_URL}/autocomplete?search=${words}&cohort=${cohort}`);
+  const { data } = response.data; // Sorry for the double data key, maybe we should fix this
+  return data;
+}
+```
 
 # Installation (for development)
 
@@ -62,6 +183,11 @@ python3 -m unittest
 todo
 
 
+# Nice to haves 
+
+1) Allow custom surround for GET search/ route (right now defaults to <b> </b>)
+2) Improve the fuzzy search configurations
+3) Improve code snippet configurations. -> Tokenizing html correctly
 
 # Extra reading
 
