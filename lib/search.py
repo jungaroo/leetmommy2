@@ -200,13 +200,13 @@ class IndexController:
 if __name__ == "__main__":
 
     cli = IndexController.get_instance()
-    # cli.delete_index('demo11')
-    # cli.create_index('r11')
-    # import crawler
+    cli.delete_index('demo11')
+    cli.create_index('demo11')
+    import crawler
 
-    # data = crawler.scrape_cohort_lectures('r11')
-    # cli.bulk_insert(json_data=data, index_name='r11')
+    data = crawler.scrape_cohort_lectures('r11')
+    cli.bulk_insert(json_data=data, index_name='demo11')
 
-    res = cli.search(search_query='oop', index_name='r11')
+    res = cli.search(search_query='oop', index_name='demo11')
     print("Results:", len(res), [r['title'] for r in res])
-    # res = cli.autocomplete('rithm11', 'rea')
+    res = cli.autocomplete('demo11', 'rea')

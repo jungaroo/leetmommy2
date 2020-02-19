@@ -43,8 +43,8 @@ wakeUpHeroku();
 #### URI Parameters
 | Name | Input | Required | Type | Description |
 | --- | --- | --- | --- | --- |
-| search | query | True | string | Space seperated string of search
-| cohort | query | True | string | A cohort string. Either 'r11', 'r12', 'r13' or 'r14' etc. 
+| search | query | true | string | Space seperated string of search
+| cohort | query | true | string | A cohort string. Either 'r11', 'r12', 'r13' or 'r14' etc. 
 
 ### Response
 If successful parameters are passed: 
@@ -90,8 +90,8 @@ const BASE_URL = 'leetmommy2.herokuapp.com';
 
 const getLinks = async (words='Python', cohort='r13') => {
   const response = await axios.get(`${BASE_URL}/search?search=${words}&cohort=${cohort}`);
-  const { data } = response.data; // Sorry for the double data key, maybe we should fix this
-  const links = data.map((d) => d.url);
+  const { documents } = response.data; 
+  const links = documents.map((d) => d.url);
   return links;
 }
 ```
@@ -100,8 +100,8 @@ const getLinks = async (words='Python', cohort='r13') => {
 #### URI Parameters
 | Name | Input | Required | Type | Description |
 | --- | --- | --- | --- | --- |
-| search | query | True | string | Space seperated string of search
-| cohort | query | True | string | A cohort string. Either 'r11', 'r12', 'r13' or 'r14' etc. 
+| search | query | true | string | Space seperated string of search
+| cohort | query | true | string | A cohort string. Either 'r11', 'r12', 'r13' or 'r14' etc. 
 
 ### Response
 If successful parameters are passed: 
@@ -125,7 +125,7 @@ const BASE_URL = 'leetmommy2.herokuapp.com';
 
 const getLinks = async (words='Python', cohort='r13') => {
   const response = await axios.get(`${BASE_URL}/autocomplete?search=${words}&cohort=${cohort}`);
-  const { data } = response.data; // Sorry for the double data key, maybe we should fix this
+  const { documents } = response.data; // Sorry for the double data key, maybe we should fix this
   return data;
 }
 ```
