@@ -5,6 +5,7 @@ from lib.search import IndexController
 from lib.schema import validator, LeetMommyValidator, QueryValidator
 from lib.config import CONFIG
 from flask_cors import CORS
+
 app = FlaskAPI(__name__)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
 
@@ -26,8 +27,7 @@ def notes_list():
 
     data = scrape_cohort_lectures(cohort=cohort)
     client.bulk_insert(index_name=cohort, json_data=data)
-    return {'data': data}, status.HTTP_200_OK
-
+    return {'ok': True }, status.HTTP_200_OK
 
 @app.route("/search", methods=['GET'])
 @validator(QueryValidator)
@@ -42,7 +42,7 @@ def search():
     client = IndexController.get_instance()
     data = client.search(index_name=cohort, search_query=query)
 
-    return {'data': data}, status.HTTP_200_OK
+    return {'documents': data}, status.HTTP_200_OK
 
 
 @app.route("/autocomplete", methods=['GET'])
@@ -58,7 +58,7 @@ def autocompleter():
     client = IndexController.get_instance()
     data = client.autocomplete(index_name=cohort, query_text=query)
 
-    return {'data': data}, status.HTTP_200_OK
+    return {'documents': data}, status.HTTP_200_OK
 
 
 if __name__ == "__main__":
