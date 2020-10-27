@@ -10,7 +10,7 @@ Click==7.0
 constantly==15.1.0
 contextlib2==0.5.5
 crochet==1.11.0
-cryptography==2.8
+cryptography==3.2
 cssselect==1.1.0
 docker-py==1.10.6
 docker-pycreds==0.4.0
